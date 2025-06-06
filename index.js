@@ -8,4 +8,7 @@ connectDB().then(() => {
     app.listen(port, () => {
         console.log('App is running on port:', PORT)
     })
+}).catch((err) => {
+    console.log("Error:", err.message)
+    process.exit(1)
 })
