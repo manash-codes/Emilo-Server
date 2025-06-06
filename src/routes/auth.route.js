@@ -1,13 +1,13 @@
 const { Router } = require('express');
 const { login, register, logout } = require('../controllers/auth.controller');
-// import all controllers
-// import SessionController from './app/controllers/SessionController';
+const { userLoginSchema, userRegisterSchema } = require('../schema/user');
+const validateRequest = require('../middlewares/validate.middleware');
 
 const routes = new Router();
 
 // Add routes
-routes.post('/login', login);
-routes.post('/register', register);
+routes.post('/login', userLoginSchema, validateRequest, login);
+routes.post('/register', userRegisterSchema, validateRequest, register);
 routes.get('/logout', logout);
 
 

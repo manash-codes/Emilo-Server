@@ -1,15 +1,15 @@
 const { Router } = require('express');
 const { create, get, update, remove, getById } = require('../controllers/post.controller');
-// import all controllers
-// import SessionController from './app/controllers/SessionController';
+const { postQuerySchema, postParamSchema, postCreateSchema } = require('../schema/post');
+const validateRequest = require('../middlewares/validate.middleware');
 
 const routes = new Router();
 
 // Add routes
-routes.get('/', get);
-routes.get('/:id', getById);
-routes.post('/', create);
-routes.put('/:id', update);
-routes.delete('/:id', remove);
+routes.get('/', postQuerySchema, validateRequest, get);
+routes.get('/:id', postParamSchema, validateRequest, getById);
+routes.post('/', postCreateSchema, validateRequest, create);
+routes.put('/:id', postParamSchema, validateRequest, update);
+routes.delete('/:id', postParamSchema, validateRequest, remove);
 
 module.exports = routes;
