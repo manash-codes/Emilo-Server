@@ -6,8 +6,12 @@ const { NOT_FOUND, OK, SERVER_ERROR, CREATED } = require("../config/httpCode");
 
 async function login(req, res) {
     try {
-        const { email, password } = req.validated;
-        const user = await userModel.findOne({ $or: [{ email: email.toLowerCase() }, { username: email.toLowerCase() }] })
+        const { email, password } = req.validated.body;
+        // console.log('req.validated..body', req.validated.body);
+
+        // const user = await userModel.findOne({ $or: [{ email: email.toLowerCase() }, { username: email.toLowerCase() }] })
+        const user = await userModel.findOne({ $or: [{ email: { $eq: email } }, { username: { $eq: email } }] })
+        console.log('user :', user);
 
         if (!user) {
             console.log('User not found!')
@@ -15,10 +19,11 @@ async function login(req, res) {
         }
 
         const isPasswordMatch = await bcrypt.compare(password, user?.password)
+        // console.log('isPasswordMatch :', isPasswordMatch);
 
         if (!isPasswordMatch) {
             console.log('Password is incorrect!')
-            return res.status(OK).json({ message: "Password is incorrect!" })
+            return res.status(NOT_FOUND).json({ message: "Password is incorrect!" })
         }
 
         const token = jwt.sign({ userId: user._id }, JWT_SECRET, {
